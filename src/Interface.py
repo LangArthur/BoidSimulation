@@ -7,6 +7,7 @@
 # Interface.py
 #
 
+import math
 import pyglet
 from pyglet.window import key, mouse
 from pyglet.gl import *
@@ -41,21 +42,44 @@ class Interface():
             self.drawBoid(boid)
 
     def drawBoid(self, boid):
+
         x = boid.x()
         y = boid.y()
+        direction = boid.direction()
         # set drawing color
         glColor3f(1,1,1)
 
+        # Compute the direction angle
+        # rotateAngle = 0
+        # rotateAngle = math.pi / 4
+        rotateAngle = math.acos(direction[0] + direction[1])
+
+        # compute distances
+        cosDist = math.cos(rotateAngle)
+        sinDist = math.sin(rotateAngle)
+
+        # draw the boid
         pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
             [0, 1, 2, 0, 3, 2],
             ('v2f', (x, y,
-                    x - 30, y - 10,
-                    x, y + 30,
-                    x + 30, y - 10,
+                    x + (10 * sinDist) - (10 * cosDist), y - (10 * cosDist) - (10 * sinDist),
+                    x + (30 * cosDist), y + (30 * sinDist),
+                    x - (10 * sinDist) - (10 * cosDist), y + (10 * cosDist) - (10 * sinDist),
             ))
         )
 
+        # pyglet.graphics.draw_indexed(4, pyglet.gl.GL_POINTS,
+        #     [0, 1, 2, 0, 3, 2],
+        #     ('v2f', (x, y,
+        #             x - 10, y - 10,
+        #             x, y + 30,
+        #             x + 10, y - 10,
+        #     ))
+        # )
+
     def loop(self, dt):
+        for boid in self.boids:
+            boid.update()
         self.draw()
 
     def run(self):
