@@ -9,21 +9,21 @@ import random
 
 class Boid():
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.speed = 1
-        self.direction = (random.random(), random.random())
+        self._x = x
+        self._y = y
+        self._speed = 1
+        self._direction = (random.random(), random.random())
 
     def __str__(self):
-        return "(" + str(self.x) + "," + str(self.y) + ")" + "\nspeed: " + str(self.speed) + "direction(" + str(self.direction[0]) + "," + str(self.direction[1]) + ")"
+        return "(" + str(self._x) + "," + str(self._y) + ")" + "\nspeed: " + str(self._speed) + "direction(" + str(self._direction[0]) + "," + str(self._direction[1]) + ")"
 
-    def getX(self):
-        return self.x
+    def x(self):
+        return self._x
 
-    def getY(self):
-        return self.y
+    def y(self):
+        return self._y
 
     def compute(self):
-        self.x += self.speed * self.direction[0]
-        self.y += self.speed * self.direction[1]
+        self._x += self._speed * self._direction[0]
+        self._y += self._speed * self._direction[1]
 

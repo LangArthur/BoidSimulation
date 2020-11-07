@@ -32,15 +32,17 @@ class Interface():
         if button == mouse.LEFT:
             newBoid = Boid(x, y)
             self.boids.append(newBoid)
-            print('The left mouse button was pressed.')
 
     def draw(self):
         #clear the window
         glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
 
-        self.drawBoid(800, 500)
+        for boid in self.boids:
+            self.drawBoid(boid)
 
-    def drawBoid(self, x, y):
+    def drawBoid(self, boid):
+        x = boid.x()
+        y = boid.y()
         # set drawing color
         glColor3f(1,1,1)
 
@@ -54,9 +56,6 @@ class Interface():
         )
 
     def loop(self, dt):
-        # for boid in self.boids:
-        #     print(boid)
-        #     self.drawBoid(boid.getX(), boid.getY())
         self.draw()
 
     def run(self):
