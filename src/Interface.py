@@ -22,12 +22,14 @@ class Interface():
         self.window.push_handlers(self.on_key_press)
         self.window.push_handlers(self.on_mouse_press)
 
+        self.debug = False
+
         # set clock
         pyglet.clock.schedule_interval(self.loop, 1 / 60)
 
     def on_key_press(self, symbol, modifiers):
         if symbol == key.SPACE:
-            print('The space key was pressed.')
+            self.debug = (self.debug == False)
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
@@ -49,11 +51,11 @@ class Interface():
         # set drawing color
         glColor3f(1,1,1)
 
-        # Compute the direction angle
-        # rotateAngle = 0
-        # rotateAngle = math.pi / 4
-        rotateAngle = math.acos(direction[0] + direction[1])
-
+        # compute the angle
+        rotateAngle = math.acos(direction[0])
+        # fix angle is direction is negative
+        if (direction[1] < 0):
+            rotateAngle = 2 * math.pi - rotateAngle 
         # compute distances
         cosDist = math.cos(rotateAngle)
         sinDist = math.sin(rotateAngle)
@@ -68,14 +70,22 @@ class Interface():
             ))
         )
 
-        # pyglet.graphics.draw_indexed(4, pyglet.gl.GL_POINTS,
-        #     [0, 1, 2, 0, 3, 2],
-        #     ('v2f', (x, y,
-        #             x - 10, y - 10,
-        #             x, y + 30,
-        #             x + 10, y - 10,
-        #     ))
-        # )
+        if (self.debug):
+            self.printBoidView(boid)
+
+    def printBoidView(self, boid):
+        glColor3f(1,0,0)
+
+        direction = boid.direction()
+        x = boid.x()
+        y = boid.y()
+
+        pyglet.graphics.draw_indexed(2, pyglet.gl.GL_LINES,
+            [0, 1],
+            ('v2f', (x, y,
+                x + direction[0] * boid.view(), y + direction[1] * boid.view()                
+            ))
+        )
 
     def loop(self, dt):
         for boid in self.boids:
