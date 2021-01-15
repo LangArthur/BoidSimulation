@@ -14,9 +14,14 @@ from pyglet.gl import *
 
 from src.Boid import *
 
+import time
+
+
 class Interface():
     def __init__(self):
-        self.window = pyglet.window.Window(1280, 720, caption="BoidSimulation")
+        self._width = 1280
+        self._height = 1280
+        self.window = pyglet.window.Window(self._width, self._height, caption="BoidSimulation")
         self.boids = []
         # add event handlers
         self.window.push_handlers(self.on_key_press)
@@ -70,6 +75,7 @@ class Interface():
             ))
         )
 
+        # self.printBoidView(boid)
         if (self.debug):
             self.printBoidView(boid)
 
@@ -89,7 +95,7 @@ class Interface():
 
     def loop(self, dt):
         for boid in self.boids:
-            boid.update()
+            boid.update(self._width, self._height)
         self.draw()
 
     def run(self):
