@@ -38,6 +38,10 @@ class Interface():
         if button == mouse.LEFT:
             newBoid = Boid(x, y)
             self.boids.append(newBoid)
+        if button == mouse.RIGHT:
+            print("test collision")
+            if (self.boids[0].collide(x, y)):
+                self.boids[0].onCollision()
 
     def draw(self):
         #clear the window
@@ -51,8 +55,9 @@ class Interface():
         x = boid.x()
         y = boid.y()
         direction = boid.direction()
+        color = boid.color()
         # set drawing color
-        glColor3f(1,1,1)
+        glColor3f(color[0], color[1], color[2])
 
         # compute the angle
         rotateAngle = math.acos(direction[0])
@@ -67,7 +72,6 @@ class Interface():
         pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
             [0, 1, 2, 0, 3, 2],
             ('v2f', (x - (boid.height * (1 / 4) * cosDist), y - (boid.height * (1 / 4) * sinDist),
-            # ('v2f', (x, y,
                     # right wing
                     x + (boid.width / 2 * sinDist) - (boid.height * (1 / 2) * cosDist), y - (boid.width / 2 * cosDist) - (boid.height * (1 / 2) * sinDist),
                     # top
@@ -96,9 +100,25 @@ class Interface():
         )
 
     def loop(self, dt):
-        for boid in self.boids:
-            boid.update(self._width, self._height)
+        self.update()
         self.draw()
+
+    def update(self):
+        for boid in self.boids:
+            target = self.intercept(boid)
+            if (target != 0):
+                boid.onCollision(boid)
+            boid.update(self._width, self._height)
+
+    def intercept(self, b):
+        for boid in self.boids:
+            if (boid.collide(b.x() + boid.direction()[0] * boid.view(), boid.y() + boid.direction()[1] * boid.view())):
+                return boid
+            # elif(boid.collide(b.x() + boid.direction()[0] * boid.view() / 2, boid.y() + boid.direction()[1] * boid.view() / 2)):
+            #     return boid
+            # elif(boid.collide(b.x(), b.y())):
+            #     return boid
+        return 0
 
     def run(self):
         pyglet.app.run()

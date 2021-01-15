@@ -12,6 +12,7 @@ class Boid():
     def __init__(self, x, y):
         self._x = x
         self._y = y
+        self._color = [1, 1, 1]
         self.width = 20
         self.height = 40
         self._speed = 1
@@ -42,6 +43,9 @@ class Boid():
 
     def viewRange(self):
         return self._viewAngle
+
+    def color(self):
+        return self._color[0], self._color[1], self._color[2]
 
     def update(self, screenWidth, screenHeight):
         # when the boid is out
@@ -79,4 +83,14 @@ class Boid():
         self._direction[0] = distX
         self._direction[1] = distY
 
+    def collide(self, x, y):
+        return ((math.pow((x - self._x), 2) // math.pow(self.width / 2, 2)) + (math.pow((y - self._y), 2) // math.pow(self.height / 2, 2)) <= 1)
 
+    # def onCollision(self, other):
+    def onCollision(self):
+        # print("Colide")
+        # self.rotate(math.pi / 180)
+        if (self._color == [1, 0, 0]):
+            self._color = [1, 1, 1]
+        else:
+            self._color = [1, 0, 0]
