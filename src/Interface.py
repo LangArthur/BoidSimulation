@@ -14,8 +14,6 @@ from pyglet.gl import *
 
 from src.Boid import *
 
-import time
-
 
 class Interface():
     def __init__(self):
@@ -68,10 +66,14 @@ class Interface():
         # draw the boid
         pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
             [0, 1, 2, 0, 3, 2],
-            ('v2f', (x, y,
-                    x + (boid.width / 2 * sinDist) - (boid.height * (1 / 4) * cosDist), y - (boid.width / 2 * cosDist) - (boid.height * (1 / 4) * sinDist),
-                    x + (boid.height * (3 / 4) * cosDist), y + (boid.height * (3 / 4) * sinDist),
-                    x - (boid.width / 2 * sinDist) - (boid.height * (1 / 4) * cosDist), y + (boid.width / 2 * cosDist) - (boid.height * (1 / 4) * sinDist),
+            ('v2f', (x - (boid.height * (1 / 4) * cosDist), y - (boid.height * (1 / 4) * sinDist),
+            # ('v2f', (x, y,
+                    # right wing
+                    x + (boid.width / 2 * sinDist) - (boid.height * (1 / 2) * cosDist), y - (boid.width / 2 * cosDist) - (boid.height * (1 / 2) * sinDist),
+                    # top
+                    x + (boid.height * (1 / 2) * cosDist), y + (boid.height * (1 / 2) * sinDist),
+                    # left wing
+                    x - (boid.width / 2 * sinDist) - (boid.height * (1 / 2) * cosDist), y + (boid.width / 2 * cosDist) - (boid.height * (1 / 2) * sinDist),
             ))
         )
 
