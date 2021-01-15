@@ -12,6 +12,8 @@ class Boid():
     def __init__(self, x, y):
         self._x = x
         self._y = y
+        self.width = 20
+        self.height = 40
         self._speed = 1
 
         # random direction at initialisation
@@ -42,9 +44,25 @@ class Boid():
         return self._viewAngle
 
     def update(self, screenWidth, screenHeight):
+        # when the boid is out
+        if (self.isOut(screenWidth, screenHeight)):
+            if (self._x > screenWidth + self.width):
+                self._x = 0 - self.height
+            elif (self._x < 0 - self.width):
+                self._x = screenWidth + self.height
+            if (self._y > screenHeight + self.width):
+                self._y = 0 - self.height
+            elif (self._y < 0 - self.width):
+                self._y = screenHeight + self.height
+        else:
+            self.move()
+
+    def move(self):
         self._x += self._speed * self._direction[0]
         self._y += self._speed * self._direction[1]
-        self.rotate(math.pi / 180)
+
+    def isOut(self, width, height):
+        return self._x - self.height > width or self._x + self.height < 0 or self._y - self.height > height or self._y + self.height < 0
 
     def rotate(self, angle):
         distX = round(self._direction[0] * math.cos(angle) - self._direction[1] * math.sin(angle), 2)

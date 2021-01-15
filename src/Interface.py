@@ -20,7 +20,7 @@ import time
 class Interface():
     def __init__(self):
         self._width = 1280
-        self._height = 1280
+        self._height = 720
         self.window = pyglet.window.Window(self._width, self._height, caption="BoidSimulation")
         self.boids = []
         # add event handlers
@@ -69,9 +69,9 @@ class Interface():
         pyglet.graphics.draw_indexed(4, pyglet.gl.GL_TRIANGLES,
             [0, 1, 2, 0, 3, 2],
             ('v2f', (x, y,
-                    x + (10 * sinDist) - (10 * cosDist), y - (10 * cosDist) - (10 * sinDist),
-                    x + (30 * cosDist), y + (30 * sinDist),
-                    x - (10 * sinDist) - (10 * cosDist), y + (10 * cosDist) - (10 * sinDist),
+                    x + (boid.width / 2 * sinDist) - (boid.height * (1 / 4) * cosDist), y - (boid.width / 2 * cosDist) - (boid.height * (1 / 4) * sinDist),
+                    x + (boid.height * (3 / 4) * cosDist), y + (boid.height * (3 / 4) * sinDist),
+                    x - (boid.width / 2 * sinDist) - (boid.height * (1 / 4) * cosDist), y + (boid.width / 2 * cosDist) - (boid.height * (1 / 4) * sinDist),
             ))
         )
 
