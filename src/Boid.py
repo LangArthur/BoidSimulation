@@ -9,13 +9,15 @@ import random
 import math
 
 class Boid():
-    def __init__(self, x, y):
+    def __init__(self, id, x, y, interface):
+        self.id = id
         self._x = x
         self._y = y
         self._color = [1, 1, 1]
         self.width = 20
         self.height = 40
         self._speed = 1
+        self._interface = interface
 
         # random direction at initialisation
         vect = (random.randrange(-100, 100) / 100, random.randrange(-100, 100) / 100)
@@ -60,6 +62,9 @@ class Boid():
                 self._y = screenHeight + self.height
         else:
             self.move()
+        # if (self.detectObstacle()):
+        #     print("detected")
+            # self.rotate(math.pi / 90)
 
     def move(self):
         self._x += self._speed * self._direction[0]
@@ -86,11 +91,17 @@ class Boid():
     def collide(self, x, y):
         return ((math.pow((x - self._x), 2) // math.pow(self.width / 2, 2)) + (math.pow((y - self._y), 2) // math.pow(self.height / 2, 2)) <= 1)
 
-    # def onCollision(self, other):
-    def onCollision(self):
-        # print("Colide")
-        # self.rotate(math.pi / 180)
-        if (self._color == [1, 0, 0]):
-            self._color = [1, 1, 1]
-        else:
-            self._color = [1, 0, 0]
+    # https://www.toptal.com/game/video-game-physics-part-ii-collision-detection-for-solid-objects
+    def detectObstacle(self):
+        xLim = self._x + self._direction[0] * self._viewDist
+        yLim = self._x + self._direction[1] * self._viewDist
+        x = y = self._x
+        coef = 0.1
+        while ( math.pow(self._x - x, 2) + math.pow(self._y - y, 2) + math.pow(x - xLim, 2) + math.pow(y - yLim, 2) < self._viewDist ** 2): #TODO check the math here
+            print(coef)
+            if (self._interface.intercect(self.id, x, y)):
+                return True
+            x = self._x + self._direction[1] * coef
+            y = self._x + self._direction[1] * self._viewDist
+            coef += 0.1
+        return False

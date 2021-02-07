@@ -24,6 +24,7 @@ class Interface():
         # add event handlers
         self.window.push_handlers(self.on_key_press)
         self.window.push_handlers(self.on_mouse_press)
+        self._lastId = 0
 
         self.debug = False
 
@@ -36,8 +37,9 @@ class Interface():
 
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
-            newBoid = Boid(x, y)
+            newBoid = Boid(self._lastId, x, y, self)
             self.boids.append(newBoid)
+            self._lastId += 1
         if button == mouse.RIGHT:
             print("test collision")
             if (self.boids[0].collide(x, y)):
@@ -105,20 +107,14 @@ class Interface():
 
     def update(self):
         for boid in self.boids:
-            target = self.intercept(boid)
-            if (target != 0):
-                boid.onCollision(boid)
             boid.update(self._width, self._height)
 
-    def intercept(self, b):
+    def intercect(self, id, x, y):
         for boid in self.boids:
-            if (boid.collide(b.x() + boid.direction()[0] * boid.view(), boid.y() + boid.direction()[1] * boid.view())):
-                return boid
-            # elif(boid.collide(b.x() + boid.direction()[0] * boid.view() / 2, boid.y() + boid.direction()[1] * boid.view() / 2)):
-            #     return boid
-            # elif(boid.collide(b.x(), b.y())):
-            #     return boid
-        return 0
+            if (boid.id != id):
+                if (boid.collide(x, y)):
+                    return True
+        return False
 
     def run(self):
         pyglet.app.run()
