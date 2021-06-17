@@ -40,10 +40,10 @@ class Interface():
             newBoid = Boid(self._lastId, x, y, self)
             self.boids.append(newBoid)
             self._lastId += 1
-        if button == mouse.RIGHT:
-            print("test collision")
-            if (self.boids[0].collide(x, y)):
-                self.boids[0].onCollision()
+        # if button == mouse.RIGHT:
+        #     print("test collision")
+        #     if (self.boids[0].collide(x, y)):
+        #         self.boids[0].onCollision()
 
     def draw(self):
         #clear the window
@@ -54,10 +54,10 @@ class Interface():
 
     def drawBoid(self, boid):
 
-        x = boid.x()
-        y = boid.y()
-        direction = boid.direction()
-        color = boid.color()
+        x = boid.position[0]
+        y = boid.position[1]
+        direction = boid.velocity
+        color = boid.color
         # set drawing color
         glColor3f(color[0], color[1], color[2])
 
@@ -90,14 +90,14 @@ class Interface():
     def printBoidView(self, boid):
         glColor3f(1,0,0)
 
-        direction = boid.direction()
-        x = boid.x()
-        y = boid.y()
+        direction = boid.velocity
+        x = boid.position[0]
+        y = boid.position[1]
 
         pyglet.graphics.draw_indexed(2, pyglet.gl.GL_LINES,
             [0, 1],
             ('v2f', (x, y,
-                x + direction[0] * boid.view(), y + direction[1] * boid.view()                
+                x + direction[0] * boid.viewDist, y + direction[1] * boid.viewDist               
             ))
         )
 
@@ -109,12 +109,12 @@ class Interface():
         for boid in self.boids:
             boid.update(self._width, self._height)
 
-    def intercect(self, id, x, y):
-        for boid in self.boids:
-            if (boid.id != id):
-                if (boid.collide(x, y)):
-                    return True
-        return False
-
     def run(self):
         pyglet.app.run()
+
+    def findNeighbor(self, position, id):
+        res = []
+        for boid in self.boids:
+            if (boid.id != id and boid.collide(position)):
+                res.append(boid)
+        return res
