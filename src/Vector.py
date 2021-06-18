@@ -17,28 +17,20 @@ class Vector():
         return ("(" + str(self.x) + "," + str(self.y) + ")")
 
     def __add__(self, other):
-        self.x += other.x
-        self.y += other.y
-        return self
+        return Vector(self.x + other.x, self.y + other.y)
 
     def __sub__(self, other):
-        self.x -= other.x
-        self.y -= other.y
-        return self
+        return Vector(self.x - other.x, self.y - other.y)
 
     def __mul__(self, value):
         if (type(value) is int or type(value) is float):
-            self.x *= value
-            self.y *= value
-            return self
+            return Vector(self.x * value, self.y * value)
         else:
             raise ValueError("Immposible to multiply with " + type(value) + "type.")
 
     def __truediv__(self, value):
         if ((type(value) is float or type(value) is int) and value != 0):
-            self.x /= value
-            self.y /= value
-            return self
+            return Vector(self.x / value, self.y / value)
         else:
             raise ValueError("Impossible to divide with this value " + str(value))
 

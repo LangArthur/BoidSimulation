@@ -41,9 +41,9 @@ class Boid():
     def update(self, screenWidth, screenHeight):
 
         neighbors = self._interface.findNeighbor(self.position, self.id)
-        # self.align(neighbors)
+        self.align(neighbors)
         self.cohesion(neighbors)
-
+        self.seperation(neighbors)
         # when the boid is out
         if (self.isOut(screenWidth, screenHeight)):
             if (self.position[0] > screenWidth + self.width):
@@ -117,11 +117,31 @@ class Boid():
             centerOfMass /= (nbrNeighbors + 1)
             centerOfMass -= self.position
             # control the speed
-            if (centerOfMass.squaredMagnitude() > math.pow(self._maxSpeed, 2)):
+            if (centerOfMass.squaredMagnitude() > 0):
                 centerOfMass.normalize()
                 centerOfMass *= self._maxSpeed
             steering = centerOfMass - self.velocity
             if (steering.squaredMagnitude() > math.pow(self._maxForce, 2)):
+                steering.normalize()
+                steering *= self._maxForce
+            self.acceleration += steering
+
+    def seperation(self, neighbors):
+        nbrNeighbors = len(neighbors)
+        if (nbrNeighbors > 0):
+            average = Vector(0, 0)
+            for neighbor in neighbors:
+                diff = self.position - neighbor.position
+                magnitude = diff.magnitude()
+                if (magnitude != 0):
+                    diff /= diff.magnitude()
+                average += diff
+            average /= nbrNeighbors
+            if (average.magnitude() > 0):
+                average.normalize()
+                average *= self._maxSpeed
+            steering = average - self.velocity
+            if (steering.magnitude() > math.pow(self._maxForce, 2)):
                 steering.normalize()
                 steering *= self._maxForce
             self.acceleration += steering
