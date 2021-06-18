@@ -26,6 +26,8 @@ class Boid():
         self.viewAngle = 50
 
         self._interface = interface
+        self._maxSpeed = 5
+        self._maxForce = 0.3
 
 
         # random direction at initialisation
@@ -34,11 +36,13 @@ class Boid():
         norm = math.sqrt(vect[0] * vect[0] + vect[1] * vect[1])
 
         self.velocity = Vector(round(vect[0] / norm, 2), round(vect[1] / norm, 2))
-        # self.acceleration = Vector(1, 1)
+        self.acceleration = Vector(0, 0)
 
     def update(self, screenWidth, screenHeight):
 
-        self.align()
+        neighbors = self._interface.findNeighbor(self.position, self.id)
+        # self.align(neighbors)
+        self.cohesion(neighbors)
 
         # when the boid is out
         if (self.isOut(screenWidth, screenHeight)):
@@ -59,7 +63,12 @@ class Boid():
 
     def move(self):
         self.position += self.velocity
-        # self.velocity += self.acceleration
+        self.velocity += self.acceleration
+        if (self.velocity.squaredMagnitude() > math.pow(self._maxSpeed, 2)):
+            self.velocity.normalize() 
+            self.velocity *= self._maxSpeed
+        self.acceleration[0] = 0
+        self.acceleration[1] = 0
 
     def rotate(self, angle):
         distX = round(self.velocity[0] * math.cos(angle) - self.velocity[1] * math.sin(angle), 2)
@@ -84,15 +93,35 @@ class Boid():
     # def preciseCollide(self, x, y):
     #     return ((math.pow((x - self._x), 2) // math.pow(self.width / 2, 2)) + (math.pow((y - self._y), 2) // math.pow(self.height / 2, 2)) <= 1)
 
-    def align(self):
-        neighbors = self._interface.findNeighbor(self.position, self.id)
+    def align(self, neighbors):
         nbrNeighbors = len(neighbors)
         if (nbrNeighbors > 0):
             # get average velocity
             average = Vector(0, 0)
             for neighbor in neighbors:
                 average += neighbor.velocity
-            average /= nbrNeighbors
-            average.norm()
+            average += self.velocity
+            average /= (nbrNeighbors + 1)
+            average.normalize()
             steering = average - self.velocity
-            self.velocity += steering
+            self.acceleration += steering
+
+    def cohesion(self, neighbors):
+        nbrNeighbors = len(neighbors)
+        if (nbrNeighbors > 0):
+            # get center of mass
+            centerOfMass = Vector(0, 0)
+            for neighbor in neighbors:
+                centerOfMass += neighbor.position
+            centerOfMass += self.position
+            centerOfMass /= (nbrNeighbors + 1)
+            centerOfMass -= self.position
+            # control the speed
+            if (centerOfMass.squaredMagnitude() > math.pow(self._maxSpeed, 2)):
+                centerOfMass.normalize()
+                centerOfMass *= self._maxSpeed
+            steering = centerOfMass - self.velocity
+            if (steering.squaredMagnitude() > math.pow(self._maxForce, 2)):
+                steering.normalize()
+                steering *= self._maxForce
+            self.acceleration += steering

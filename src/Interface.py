@@ -57,6 +57,7 @@ class Interface():
         x = boid.position[0]
         y = boid.position[1]
         direction = boid.velocity
+        direction.normalize()
         color = boid.color
         # set drawing color
         glColor3f(color[0], color[1], color[2])
@@ -91,6 +92,7 @@ class Interface():
         glColor3f(1,0,0)
 
         direction = boid.velocity
+        direction.normalize()
         x = boid.position[0]
         y = boid.position[1]
 

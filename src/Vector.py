@@ -26,6 +26,14 @@ class Vector():
         self.y -= other.y
         return self
 
+    def __mul__(self, value):
+        if (type(value) is int or type(value) is float):
+            self.x *= value
+            self.y *= value
+            return self
+        else:
+            raise ValueError("Immposible to multiply with " + type(value) + "type.")
+
     def __truediv__(self, value):
         if ((type(value) is float or type(value) is int) and value != 0):
             self.x /= value
@@ -53,7 +61,10 @@ class Vector():
     def magnitude(self):
         return math.sqrt(self.x * self.x + self.y * self.y)
 
-    def norm(self):
+    def squaredMagnitude(self):
+        return self.x * self.x + self.y * self.y
+
+    def normalize(self):
         magnitude = self.magnitude()
         self.x /= magnitude
         self.y /= magnitude
