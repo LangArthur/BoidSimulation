@@ -24,38 +24,38 @@ class Interface():
         # add event handlers
         self.window.push_handlers(self.on_key_press)
         self.window.push_handlers(self.on_mouse_press)
-        self._lastId = 0
+        # next id availble for boids
+        self._availableId = 0
 
         self.debug = False
-
-        # set clock
         pyglet.clock.schedule_interval(self.loop, 1 / 60)
 
+    # keyboard event
     def on_key_press(self, symbol, modifiers):
         if symbol == key.SPACE:
             self.debug = (self.debug == False)
 
+    # keyboard event
     def on_mouse_press(self, x, y, button, modifiers):
         if button == mouse.LEFT:
-            newBoid = Boid(self._lastId, x, y, self)
+            newBoid = Boid(self._availableId, x, y, self)
             self.boids.append(newBoid)
-            self._lastId += 1
-        # if button == mouse.RIGHT:
-        #     print("test collision")
-        #     if (self.boids[0].collide(x, y)):
-        #         self.boids[0].onCollision()
+            self._availableId += 1
 
     def draw(self):
+        pyglet.clock.tick()
         #clear the window
         glClear(pyglet.gl.GL_COLOR_BUFFER_BIT)
 
         for boid in self.boids:
             self.drawBoid(boid)
+        print("FPS: {}\t there are {} boids".format(round(pyglet.clock.get_fps(), 2), len(self.boids)), end='\r')
 
+    # draw a boid
     def drawBoid(self, boid):
 
-        x = boid.position[0]
-        y = boid.position[1]
+        x = boid.position.x
+        y = boid.position.y
         direction = boid.velocity
         direction.normalize()
         color = boid.color
@@ -84,17 +84,17 @@ class Interface():
             ))
         )
 
-        # self.printBoidView(boid)
         if (self.debug):
             self.printBoidView(boid)
 
+    # display use when debug mode is active
     def printBoidView(self, boid):
         glColor3f(1,0,0)
 
         direction = boid.velocity
         direction.normalize()
-        x = boid.position[0]
-        y = boid.position[1]
+        x = boid.position.x
+        y = boid.position.y
 
         pyglet.graphics.draw_indexed(2, pyglet.gl.GL_LINES,
             [0, 1],
@@ -103,17 +103,20 @@ class Interface():
             ))
         )
 
+    # main loop of the programm
     def loop(self, dt):
         self.update()
         self.draw()
 
     def update(self):
+        # update all boids
         for boid in self.boids:
             boid.update(self._width, self._height)
 
     def run(self):
         pyglet.app.run()
 
+    # return all the neighbors of a specific boid
     def findNeighbor(self, position, id):
         res = []
         for boid in self.boids:

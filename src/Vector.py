@@ -7,6 +7,7 @@
 
 import math
 
+# Implementation of a 2d vector
 class Vector():
     
     def __init__(self, x, y):
@@ -50,16 +51,24 @@ class Vector():
         else:
             raise ValueError("Error: bad index for a vector")
 
+    # return the magnitude (called also norm)
     def magnitude(self):
         return math.sqrt(self.x * self.x + self.y * self.y)
 
+    # return the square of magnitude for optimisation purpose
     def squaredMagnitude(self):
         return self.x * self.x + self.y * self.y
 
+    # normalize the vector
     def normalize(self):
         magnitude = self.magnitude()
         self.x /= magnitude
         self.y /= magnitude
 
+# distance between two vectors
+def dist(vec1, vec2):
+    return (math.pow(vec1[0] - vec2[0], 2) + math.pow(vec1[1] - vec2[1], 2) )
+
+# squared distance between two vectors (for optimization purpose)
 def squareDist(vec1, vec2):
     return (math.pow(vec1[0] - vec2[0], 2) + math.pow(vec1[1] - vec2[1], 2) )

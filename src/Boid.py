@@ -46,21 +46,22 @@ class Boid():
         self.seperation(neighbors)
         # when the boid is out
         if (self.isOut(screenWidth, screenHeight)):
-            if (self.position[0] > screenWidth + self.width):
-                self.position[0] = 0 - self.height
-            elif (self.position[0] < 0 - self.width):
-                self.position[0] = screenWidth + self.height
-            if (self.position[1] > screenHeight + self.width):
-                self.position[1] = 0 - self.height
-            elif (self.position[1] < 0 - self.width):
-                self.position[1] = screenHeight + self.height
+            if (self.position.x > screenWidth + self.width):
+                self.position.x = 0 - self.height
+            elif (self.position.x < 0 - self.width):
+                self.position.x = screenWidth + self.height
+            if (self.position.y > screenHeight + self.width):
+                self.position.y = 0 - self.height
+            elif (self.position.y < 0 - self.width):
+                self.position.y = screenHeight + self.height
         else:
             self.move()
 
     # check if the boid is in or out of the window rectangle
     def isOut(self, width, height):
-        return self.position[0] - self.height > width or self.position[0] + self.height < 0 or self.position[1] - self.height > height or self.position[1] + self.height < 0
+        return self.position.x - self.height > width or self.position.x + self.height < 0 or self.position.y - self.height > height or self.position.y + self.height < 0
 
+    # update the position of the boid
     def move(self):
         self.position += self.velocity
         self.velocity += self.acceleration
@@ -70,6 +71,7 @@ class Boid():
         self.acceleration[0] = 0
         self.acceleration[1] = 0
 
+    # rotate the boid
     def rotate(self, angle):
         distX = round(self.velocity[0] * math.cos(angle) - self.velocity[1] * math.sin(angle), 2)
         if (distX > 1.0):
@@ -86,13 +88,15 @@ class Boid():
         self.velocity[1] = distY
 
 
+    # return true if the position collide with the boid vision zone
     def collide(self, position):
         return math.pow(self.viewDist, 2) > squareDist(position, self.position)
 
-    # collision with the ovaloid
+    # collision with ovaloid hitbox (may be useful in future)
     # def preciseCollide(self, x, y):
-    #     return ((math.pow((x - self._x), 2) // math.pow(self.width / 2, 2)) + (math.pow((y - self._y), 2) // math.pow(self.height / 2, 2)) <= 1)
+    #     return ((math.pow((position.x - self.position.x), 2) // math.pow(self.width / 2, 2)) + (math.pow((position.y - self.position.y), 2) // math.pow(self.height / 2, 2)) <= 1)
 
+    # align rule
     def align(self, neighbors):
         nbrNeighbors = len(neighbors)
         if (nbrNeighbors > 0):
@@ -106,6 +110,7 @@ class Boid():
             steering = average - self.velocity
             self.acceleration += steering
 
+    # cohesion rule
     def cohesion(self, neighbors):
         nbrNeighbors = len(neighbors)
         if (nbrNeighbors > 0):
@@ -126,6 +131,7 @@ class Boid():
                 steering *= self._maxForce
             self.acceleration += steering
 
+    # separation rule
     def seperation(self, neighbors):
         nbrNeighbors = len(neighbors)
         if (nbrNeighbors > 0):
