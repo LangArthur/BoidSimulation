@@ -11,6 +11,7 @@ import math
 from src.Vector import *
 
 # https://www.red3d.com/cwr/boids/
+# https://betterprogramming.pub/boids-simulating-birds-flock-behavior-in-python-9fff99375118
 
 class Boid():
 
@@ -33,11 +34,11 @@ class Boid():
         norm = math.sqrt(vect[0] * vect[0] + vect[1] * vect[1])
 
         self.velocity = Vector(round(vect[0] / norm, 2), round(vect[1] / norm, 2))
-        self.acceleration = Vector(0, 0)
+        # self.acceleration = Vector(1, 1)
 
     def update(self, screenWidth, screenHeight):
 
-        # self.align()
+        self.align()
 
         # when the boid is out
         if (self.isOut(screenWidth, screenHeight)):
@@ -58,7 +59,7 @@ class Boid():
 
     def move(self):
         self.position += self.velocity
-        self.velocity += self.acceleration
+        # self.velocity += self.acceleration
 
     def rotate(self, angle):
         distX = round(self.velocity[0] * math.cos(angle) - self.velocity[1] * math.sin(angle), 2)
@@ -94,5 +95,4 @@ class Boid():
             average /= nbrNeighbors
             average.norm()
             steering = average - self.velocity
-            self.acceleration += steering
-            
+            self.velocity += steering

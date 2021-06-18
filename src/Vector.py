@@ -59,4 +59,4 @@ class Vector():
         self.y /= magnitude
 
 def squareDist(vec1, vec2):
-    return (math.pow(vec1[0] - vec1[0], 2) + math.pow(vec1[1] - vec1[1], 2) )
+    return (math.pow(vec1[0] - vec2[0], 2) + math.pow(vec1[1] - vec2[1], 2) )
