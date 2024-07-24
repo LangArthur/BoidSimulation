@@ -1,11 +1,12 @@
 # BoidSimulation
-A simple sandBox with boids
 
-## instalation
+A simple sandBox with boids.
 
-I recommand to use pip to install the requirements
+## installation
 
-```
+I recommend to use pip to install the requirements:
+
+```sh
 pip install requirements.txt
 ```
 
@@ -17,7 +18,7 @@ You can press space to activate the debug mode.
 
 ## Built With
 
-* [pyglet](http://pyglet.org) - Python library for developing games and other visually-rich applications 
+* [pyglet](http://pyglet.org) - Python library for developing games and other visually-rich applications
 
 ## Author
 
